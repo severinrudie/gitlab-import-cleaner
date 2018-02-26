@@ -42,7 +42,7 @@ const hasModifiedNonImport = (elem) => {
   }
 
   if (isModifiedLineHolder(elem)) {
-    return !isImportStatement(elem);
+    return !isImportOrPackage(elem);
   }
 }
 
@@ -59,11 +59,12 @@ const isModifiedLineHolder = (elem) => {
   elem.classList.contains('new'))
 }
 
-const isImportStatement = (lineHolder) => {
-//  console.log("isImportStatement")
+const isImportOrPackage = (lineHolder) => {
+//  console.log("isImportOrPackage")
   const imp = Array.from(lineHolder.getElementsByClassName('kn'))
-  return imp.length > 0 &&
-        imp[0].innerHTML === "import"
+  if (imp.length == 0) return false;
+  const text = imp[0].innerHTML;
+  return text === 'import' || text === 'package';
 }
 
 const injectBlocksRemoved = (blocksRemoved) => {
