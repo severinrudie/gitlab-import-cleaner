@@ -1,6 +1,15 @@
 (() => {
+  const DEBUG = false;
+  
+  const log = (text) => {
+    if (DEBUG) console.log(text);
+  }
+  
   const main = () => {
-    if (getCommitSummary() === null) return; // Disallow use before page has loaded
+    if (getCommitSummary() === null) { return;
+      log("Running before page finished load. Returning early");
+      return;
+    }
     const fileHolders = getFileHolders();
     let blocksRemoved = getBlocksRemoved();
     fileHolders.forEach((holder) => {
@@ -13,8 +22,8 @@
     injectBlocksRemoved(blocksRemoved);
   }
   
-    const getFileHolders = () => {
-  //  console.log("getFileHolders")
+  const getFileHolders = () => {
+    log("getFileHolders")
     return Array.from(document.getElementsByClassName('file-holder'));
   }
     
@@ -27,17 +36,17 @@
   }
 
   const isCollapsed = (elem) => {
-  //  console.log("isCollapsed")
+    log("isCollapsed")
     return elem.getElementsByClassName('loading').length > 0
   }
 
   const getCommitSummary = () => {
-  //  console.log("getCommitSummary")
+    log("getCommitSummary")
     return document.getElementsByClassName('commit-stat-summary')[0];
   }
 
   const hasModifiedNonImport = (elem) => {
-  //  console.log("hasModifiedNonImport")
+    log("hasModifiedNonImport")
     if (!isLineHolder(elem)) {
       if (elem.children === undefined) {
         return false;
@@ -57,20 +66,20 @@
   }
 
   const isLineHolder = (elem) => {
-  //  console.log("isLineHolder")
+    log("isLineHolder")
     return elem.classList != undefined &&
       elem.classList.contains('line_holder');
   }
 
   const isModifiedLineHolder = (elem) => {
-  //  console.log("isModifiedLineHolder")
+    log("isModifiedLineHolder")
     return isLineHolder(elem) &&
     (elem.classList.contains('old') ||
     elem.classList.contains('new'))
   }
 
   const isImportOrPackage = (lineHolder) => {
-  //  console.log("isImportOrPackage")
+    log("isImportOrPackage")
     const imp = Array.from(lineHolder.getElementsByClassName('kn'))
     if (imp.length == 0) return false;
     const text = imp[0].innerHTML;
@@ -78,7 +87,7 @@
   }
 
   const injectBlocksRemoved = (blocksRemoved) => {
-  //  console.log("injectBlocksRemoved")
+    log("injectBlocksRemoved")
     let changed = document.getElementById('injected')
     if (changed === null) {
       const lineBreaker = document.createElement('p')
