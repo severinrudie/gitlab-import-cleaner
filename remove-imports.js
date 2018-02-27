@@ -6,7 +6,7 @@
   }
   
   const main = () => {
-    if (getCommitSummary() === null) { return;
+    if (!getCommitSummary()) { return;
       log("Running before page finished load. Returning early");
       return;
     }
@@ -29,7 +29,7 @@
     
   const getBlocksRemoved = () => {
     const injectedSpan = document.getElementById('injected');
-    if (injectedSpan === null) return 0;
+    if (!injectedSpan) return 0;
     const text = injectedSpan.innerHTML;
     const re = /\d+/g;
     return re.exec(text);
@@ -48,14 +48,18 @@
   const hasModifiedNonImport = (elem) => {
     log("hasModifiedNonImport")
     if (!isLineHolder(elem)) {
-      if (elem.children === undefined) {
+      if (!elem.children) {
         return false;
       }
-      const children = Array.from(elem.children);
-      for (const child in children) {
-        if (hasModifiedNonImport(children[child])) {
-          return true;
-        }
+//      const children = Array.from(elem.children);
+//      for (const child in children) {
+//        if (hasModifiedNonImport(children[child])) {
+//          return true;
+//        }
+//      }
+      const lines = Array.from(elem.getElementsByClassName('noteable_line'));
+      for (var i in lines) {
+        if (hasModifiedNonImport(lines[i])) return true;
       }
       return false;
     }
@@ -68,7 +72,7 @@
   const isLineHolder = (elem) => {
     log("isLineHolder")
     return elem.classList != undefined &&
-      elem.classList.contains('line_holder');
+      elem.classList.contains('noteable_line');
   }
 
   const isModifiedLineHolder = (elem) => {
@@ -85,11 +89,15 @@
     const text = imp[0].innerHTML;
     return text === 'import' || text === 'package';
   }
+  
+  const isWhiteSpace = (lineholder) => {
+    
+  }
 
   const injectBlocksRemoved = (blocksRemoved) => {
     log("injectBlocksRemoved")
     let changed = document.getElementById('injected')
-    if (changed === null) {
+    if (!changed) {
       const lineBreaker = document.createElement('p')
       changed = document.createElement('strong')
       changed.className = 'cgreen'
