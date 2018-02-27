@@ -51,12 +51,6 @@
       if (!elem.children) {
         return false;
       }
-//      const children = Array.from(elem.children);
-//      for (const child in children) {
-//        if (hasModifiedNonImport(children[child])) {
-//          return true;
-//        }
-//      }
       const lines = Array.from(elem.getElementsByClassName('noteable_line'));
       for (var i in lines) {
         if (hasModifiedNonImport(lines[i])) return true;
@@ -65,7 +59,8 @@
     }
 
     if (isModifiedLineHolder(elem)) {
-      return !isImportOrPackage(elem);
+      return !isImportOrPackage(elem) &&
+        !isWhiteSpace(elem);
     }
   }
 
@@ -91,7 +86,10 @@
   }
   
   const isWhiteSpace = (lineholder) => {
-    
+    const spans = Array.from(lineholder.getElementsByTagName('span'))
+    if (spans.length > 1) return false;
+    if (spans.length === 0) return true;
+    if (!spans[0].innerHTML) return true;
   }
 
   const injectBlocksRemoved = (blocksRemoved) => {
