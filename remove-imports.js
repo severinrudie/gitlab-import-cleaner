@@ -1,7 +1,8 @@
 (() => {
   const main = () => {
+    if (getCommitSummary() === null) return; // Disallow use before page has loaded
     const fileHolders = getFileHolders();
-    let blocksRemoved = 0;
+    let blocksRemoved = getBlocksRemoved();
     fileHolders.forEach((holder) => {
       if (!isCollapsed(holder) &&
           !hasModifiedNonImport(holder)) {
@@ -11,15 +12,23 @@
     });
     injectBlocksRemoved(blocksRemoved);
   }
+  
+    const getFileHolders = () => {
+  //  console.log("getFileHolders")
+    return Array.from(document.getElementsByClassName('file-holder'));
+  }
+    
+  const getBlocksRemoved = () => {
+    const injectedSpan = document.getElementById('injected');
+    if (injectedSpan === null) return 0;
+    const text = injectedSpan.innerHTML;
+    const re = /\d+/g;
+    return re.exec(text);
+  }
 
   const isCollapsed = (elem) => {
   //  console.log("isCollapsed")
     return elem.getElementsByClassName('loading').length > 0
-  }
-
-  const getFileHolders = () => {
-  //  console.log("getFileHolders")
-    return Array.from(document.getElementsByClassName('file-holder'));
   }
 
   const getCommitSummary = () => {
